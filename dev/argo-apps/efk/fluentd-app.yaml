@@ -11,7 +11,7 @@ spec:
     targetRevision: 0.3.0
   helm:
     valueFiles:
-      - https://raw.githubusercontent.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPOSITORY_NAME>/<BRANCH_NAME>/dev/argo-values/efk/fluentd/values.yaml
+      - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/fluentd/values.yaml
 destination:
   server: 'https://kubernetes.default.svc'
   namespace: efk
