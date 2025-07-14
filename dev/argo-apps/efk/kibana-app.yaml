@@ -9,9 +9,9 @@ spec:
     repoURL: 'https://helm.elastic.co'
     chart: kibana
     targetRevision: 8.13.0
-  helm:
-    valueFiles:
-      - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/kibana/values.yaml
+    helm:
+      valueFiles:
+        - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/kibana/values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: efk

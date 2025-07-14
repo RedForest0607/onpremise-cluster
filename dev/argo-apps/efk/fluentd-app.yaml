@@ -9,15 +9,15 @@ spec:
     repoURL: 'https://fluent.github.io/helm-charts'
     chart: fluentd
     targetRevision: 0.3.0
-  helm:
-    valueFiles:
-      - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/fluentd/values.yaml
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: efk
-syncPolicy:
-automated:
-  prune: true
-  selfHeal: true
-syncOptions:
-  - CreateNamespace=true
+    helm:
+      valueFiles:
+        - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/fluentd/values.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: efk
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
