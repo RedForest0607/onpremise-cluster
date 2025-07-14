@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kibana
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://helm.elastic.co'
+    chart: kibana
+    targetRevision: 8.13.0
+  helm:
+    valueFiles:
+      - https://raw.githubusercontent.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPOSITORY_NAME>/<BRANCH_NAME>/dev/argo-values/efk/kibana/values.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: efk
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

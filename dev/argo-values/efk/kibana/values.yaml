@@ -1,0 +1,31 @@
+replicaCount: 1
+
+image:
+  repository: docker.elastic.co/kibana/kibana
+  tag: "8.13.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+
+service:
+  type: ClusterIP
+  port: 5601
+
+elasticsearchHosts: "http://elasticsearch-master.default.svc.cluster.local:9200"
+
+nodeSelector:
+  env: dev
+
+tolerations:
+- key: "dedicated"
+  operator: "Equal"
+  value: "worker"
+  effect: "NoSchedule"
+
+affinity: {}

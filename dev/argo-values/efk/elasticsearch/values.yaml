@@ -1,0 +1,48 @@
+replicaCount: 3
+
+image:
+  repository: docker.elastic.co/elasticsearch/elasticsearch
+  tag: "8.13.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "2Gi"
+  limits:
+    cpu: "1"
+    memory: "4Gi"
+
+esJavaOpts: "-Xmx2g -Xms2g"
+
+persistence:
+  enabled: true
+  size: 30Gi
+  storageClass: "gp2"
+
+service:
+  type: ClusterIP
+  port: 9200
+
+nodeSelector:
+  env: dev
+
+tolerations:
+- key: "dedicated"
+  operator: "Equal"
+  value: "worker"
+  effect: "NoSchedule"
+
+affinity: {}
+
+clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
+
+extraEnvs: []
+
+securityContext:
+  runAsUser: 1000
+  fsGroup: 1000
+
+elasticsearch.yml:
+  xpack.security.enabled: false
+  discovery.type: "single-node"

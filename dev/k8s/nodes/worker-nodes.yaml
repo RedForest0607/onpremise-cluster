@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: k8s-w1
+  labels:
+    node-role.kubernetes.io/worker: "true"
+    env: dev
+spec:
+  taints:
+    - key: dedicated
+      value: worker
+      effect: NoSchedule
+---
+apiVersion: v1
+kind: Node
+metadata:
+  name: k8s-w2
+  labels:
+    node-role.kubernetes.io/worker: "true"
+    env: dev
+spec:
+  taints:
+    - key: dedicated
+      value: worker
+      effect: NoSchedule
+
+---
+apiVersion: v1
+kind: Node
+metadata:
+  name: k8s-ctrl
+  labels:
+    node-role.kubernetes.io/control-plane: ""
+spec:
+  taints:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+  unschedulable: false

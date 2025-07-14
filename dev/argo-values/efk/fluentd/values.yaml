@@ -1,0 +1,40 @@
+image:
+  repository: fluent/fluentd-kubernetes-daemonset
+  tag: "v1.16.3-debian-elasticsearch8-1.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "200Mi"
+  limits:
+    cpu: "500m"
+    memory: "500Mi"
+
+serviceAccount:
+  create: true
+  name: fluentd
+
+rbac:
+  create: true
+
+tolerations:
+- key: "node-role.kubernetes.io/master"
+  operator: "Exists"
+  effect: "NoSchedule"
+- key: "dedicated"
+  operator: "Equal"
+  value: "worker"
+  effect: "NoSchedule"
+
+env:
+  - name: FLUENT_ELASTICSEARCH_HOST
+    value: "elasticsearch-master.default.svc.cluster.local"
+  - name: FLUENT_ELASTICSEARCH_PORT
+    value: "9200"
+  - name: FLUENT_ELASTICSEARCH_SCHEME
+    value: "http"
+  - name: FLUENT_ELASTICSEARCH_USER
+    value: ""
+  - name: FLUENT_ELASTICSEARCH_PASSWORD
+    value: ""
