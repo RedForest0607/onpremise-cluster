@@ -41,7 +41,7 @@ esJavaOpts: "-Xms2g -Xmx2g"
 # ───── 스토리지 ─────────────────────────────────────────────
 persistence:
   enabled: true
-  storageClass: "gp2"
+  storageClass: "local-storage"
   size: 30Gi
 
 volumeClaimTemplate:
