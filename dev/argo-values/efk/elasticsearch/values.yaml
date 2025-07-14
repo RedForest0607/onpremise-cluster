@@ -10,6 +10,8 @@ roles:
 replicas: 3            # ← 3 노드
 minimumMasterNodes: 2  # 2n+1 규칙
 
+esMajorVersion: "8"
+
 # ───── 이미지 ────────────────────────────────────────────────
 image: "docker.elastic.co/elasticsearch/elasticsearch"
 imageTag: "8.5.1"
