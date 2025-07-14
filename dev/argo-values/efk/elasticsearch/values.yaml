@@ -1,10 +1,31 @@
-replicaCount: 3
+# ───── 클러스터 기본 ──────────────────────────────────────────
+clusterName: "elasticsearch"
+nodeGroup: "main"
 
-image:
-  repository: "docker.elastic.co/elasticsearch/elasticsearch"
-  tag: "8.5.1"
-  pullPolicy: "IfNotPresent"
+roles:
+  - master
+  - data
+  - ingest
 
+replicas: 3            # ← 3 노드
+minimumMasterNodes: 2  # 2n+1 규칙
+
+# ───── 이미지 ────────────────────────────────────────────────
+image: "docker.elastic.co/elasticsearch/elasticsearch"
+imageTag: "8.5.1"
+imagePullPolicy: "IfNotPresent"
+
+# ───── 네트워크 - HTTP 전용 ──────────────────────────────────
+protocol: http          # TLS 끔
+httpPort: 9200
+transportPort: 9300
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 9200
+
+# ───── 리소스 / JVM ─────────────────────────────────────────
 resources:
   requests:
     cpu: "500m"
@@ -13,36 +34,38 @@ resources:
     cpu: "1"
     memory: "4Gi"
 
-esJavaOpts: "-Xmx2g -Xms2g"
+esJavaOpts: "-Xms2g -Xmx2g"
 
+# ───── 스토리지 ─────────────────────────────────────────────
 persistence:
   enabled: true
-  size: 30Gi
   storageClass: "gp2"
+  size: 30Gi
 
-service:
-  type: ClusterIP
-  port: 9200
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 30Gi
 
+# ───── 스케줄링 (taint & nodeSelector) ──────────────────────
 nodeSelector:
   env: dev
 
 tolerations:
-- key: "dedicated"
-  operator: "Equal"
-  value: "worker"
-  effect: "NoSchedule"
+  - key: "dedicated"
+    operator: "Equal"
+    value: "worker"
+    effect: "NoSchedule"
 
-affinity: {}
+# ───── Elasticsearch 설정 ──────────────────────────────────
+elasticsearch.yml:
+  xpack.security.enabled: false     # 인증/권한 비활성화
 
 clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
 
-extraEnvs: []
-
-securityContext:
-  runAsUser: 1000
-  fsGroup: 1000
-
-elasticsearch.yml:
-  xpack.security.enabled: false
-  # discovery.type: "single-node"
+# ───── 기타 ─────────────────────────────────────────────────
+tests:
+  enabled: false        # Helm 테스트 Job 생략
+sysctlInitContainer:
+  enabled: true         # vm.max_map_count 262144 세팅
