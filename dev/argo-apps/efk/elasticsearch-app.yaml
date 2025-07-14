@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://helm.elastic.co'
     chart: elasticsearch
-    targetRevision: 8.13.0
+    targetRevision: 8.5.1
     helm:
       valueFiles:
         - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/elasticsearch/values.yaml
