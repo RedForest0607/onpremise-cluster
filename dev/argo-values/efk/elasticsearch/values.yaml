@@ -31,12 +31,12 @@ service:
 resources:
   requests:
     cpu: "500m"
-    memory: "2Gi"
+    memory: "1Gi"
   limits:
     cpu: "1"
-    memory: "4Gi"
+    memory: "2Gi"
 
-esJavaOpts: "-Xms2g -Xmx2g"
+esJavaOpts: "-Xms1g -Xmx1g"
 
 # ───── 스토리지 ─────────────────────────────────────────────
 persistence:
@@ -55,6 +55,9 @@ nodeSelector:
   env: dev
 
 tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
   - key: "dedicated"
     operator: "Equal"
     value: "worker"
