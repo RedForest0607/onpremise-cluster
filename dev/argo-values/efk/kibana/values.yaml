@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: docker.elastic.co/kibana/kibana
-  tag: "8.13.0"
+  tag: "8.5.1"
   pullPolicy: IfNotPresent
 
 resources:
@@ -30,5 +30,5 @@ tolerations:
     operator: "Equal"
     value: "worker"
     effect: "NoSchedule"
-    
+
 affinity: {}
