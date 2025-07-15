@@ -74,7 +74,13 @@ esConfig:
     xpack.security.enabled: false
     xpack.security.http.ssl.enabled: false
     xpack.security.transport.ssl.enabled: false
-
+extraEnvs:
+  - name: "xpack.security.enabled"
+    value: "false"
+  - name: "xpack.security.http.ssl.enabled"
+    value: "false"
+  - name: "xpack.security.transport.ssl.enabled"
+    value: "false"
 # ───── 기타 ─────────────────────────────────────────────────
 tests:
   enabled: false        # Helm 테스트 Job 생략
