@@ -69,7 +69,9 @@ antiAffinity: "soft"
 clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
 secret:
   enabled: false          # TLS·비밀번호 시크릿 생성 OFF
-
+extraEnvs:
+  - name: "ELASTIC_PASSWORD"
+    value: "vaing8Ch"
 # ───── 기타 ─────────────────────────────────────────────────
 tests:
   enabled: false        # Helm 테스트 Job 생략
