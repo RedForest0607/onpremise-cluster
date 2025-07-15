@@ -70,12 +70,6 @@ clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
 secret:
   enabled: false          # TLS·비밀번호 시크릿 생성 OFF
 
-# ───── 보안 설정 ────────────────────────────────────────────
-# xpack.security.enabled를 false로 설정하여 보안 기능을 비활성화합니다.
-# 이렇게 하면 ELASTIC_PASSWORD 없이 파드가 시작될 수 있습니다.
-esConfig:
-  elasticsearch.yml: |
-    xpack.security.enabled: false
 # ───── 기타 ─────────────────────────────────────────────────
 tests:
   enabled: false        # Helm 테스트 Job 생략
