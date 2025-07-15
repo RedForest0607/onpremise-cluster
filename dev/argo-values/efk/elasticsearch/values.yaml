@@ -28,7 +28,7 @@ imagePullPolicy: "IfNotPresent"
 protocol: http
 httpPort: 9200
 transportPort: 9300
-
+createCert: false
 service:
   enabled: true
   type: ClusterIP
