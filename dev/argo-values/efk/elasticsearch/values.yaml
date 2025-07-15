@@ -1,7 +1,7 @@
 # ───── 클러스터 기본 ──────────────────────────────────────────
 clusterName: "elasticsearch"
 nodeGroup: "main"
-masterService: "main"
+masterService: "elasticsearch-main"
 
 roles:
   - master
