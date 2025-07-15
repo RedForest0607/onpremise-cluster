@@ -66,13 +66,9 @@ tolerations:
 antiAffinity: "soft"
 
 # ───── Elasticsearch 설정 ──────────────────────────────────
-elasticsearch.yml:
-  xpack.security.enabled: false     # 인증/권한 비활성화
-
 clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
 secret:
   enabled: false          # TLS·비밀번호 시크릿 생성 OFF
-  password: ""
 esConfig:
   elasticsearch.yml: |
     xpack.security.enabled: false
