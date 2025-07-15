@@ -41,11 +41,11 @@ esJavaOpts: "-Xms2g -Xmx2g"
 # ───── 스토리지 ─────────────────────────────────────────────
 persistence:
   enabled: true
-  storageClass: "local-storage"
   size: 30Gi
 
 volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
+  storageClass: "local-storage"  # 로컬 스토리지 사용
   resources:
     requests:
       storage: 30Gi
