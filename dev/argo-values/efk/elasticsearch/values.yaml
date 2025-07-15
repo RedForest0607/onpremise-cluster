@@ -62,6 +62,7 @@ tolerations:
     operator: "Equal"
     value: "worker"
     effect: "NoSchedule"
+antiAffinity: "soft"
 
 # ───── Elasticsearch 설정 ──────────────────────────────────
 elasticsearch.yml:
