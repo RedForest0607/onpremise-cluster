@@ -71,6 +71,12 @@ elasticsearch.yml:
 
 clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
 
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: false
+    xpack.security.http.ssl.enabled: false
+    xpack.security.transport.ssl.enabled: false
+
 # ───── 기타 ─────────────────────────────────────────────────
 tests:
   enabled: false        # Helm 테스트 Job 생략
