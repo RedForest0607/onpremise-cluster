@@ -1,27 +1,29 @@
-replicaCount: 1
+# ------------------------------------------------------------
+# Bitnami Kibana
+# ------------------------------------------------------------
+image:
+  registry: docker.io
+  repository: bitnami/kibana
+  tag: 8.15.2-debian-11-r0
+  pullPolicy: IfNotPresent
 
-image: "docker.elastic.co/kibana/kibana"
-imageTag: "8.5.1"
-imagePullPolicy: "IfNotPresent"
-
-resources:
-  requests:
-    cpu: "500m"
-    memory: "1Gi"
-  limits:
-    cpu: "1"
-    memory: "2Gi"
-
-protocol: http
+elasticsearch:                  # 외부 ES 서비스 정보
+  hosts:
+    - elasticsearch
+  port: 9200
+  protocol: http
+  security:
+    auth:
+      enabled: false
+    tls:
+      enabled: false
 
 service:
   type: ClusterIP
   port: 5601
 
-elasticsearchHosts: "http://elasticsearch-master.default.svc.cluster.local:9200"
-
-nodeSelector:
-  env: dev
+ingress:
+  enabled: false                # 필요하면 true & rules 설정
 
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
@@ -32,4 +34,10 @@ tolerations:
     value: "worker"
     effect: "NoSchedule"
 
-affinity: {}
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi

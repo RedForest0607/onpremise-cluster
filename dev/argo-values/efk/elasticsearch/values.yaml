@@ -1,66 +1,7 @@
-# ───── 클러스터 기본 ──────────────────────────────────────────
-clusterName: "elasticsearch"
-nodeGroup: "main"
-masterService: "elasticsearch-main"
-
-roles:
-  - master
-  - data
-  - ingest
-
-replicas: 3            # ← 3 노드
-minimumMasterNodes: 2  # 2n+1 규칙
-
-
-esConfig:
-  elasticsearch.yml: |
-    xpack.security.enabled: false
-    xpack.security.enrollment.enabled: false
-    xpack.security.http.ssl.enabled: false
-    xpack.security.transport.ssl.enabled: false
-
-# ───── 이미지 ────────────────────────────────────────────────
-image: "docker.elastic.co/elasticsearch/elasticsearch"
-imageTag: "8.5.1"
-imagePullPolicy: "IfNotPresent"
-
-# ───── 네트워크 - HTTP 전용 ──────────────────────────────────
-protocol: http
-httpPort: 9200
-transportPort: 9300
-createCert: false
-service:
-  enabled: true
-  type: ClusterIP
-  port: 9200
-
-# ───── 리소스 / JVM ─────────────────────────────────────────
-resources:
-  requests:
-    cpu: "500m"
-    memory: "1Gi"
-  limits:
-    cpu: "1"
-    memory: "2Gi"
-
-esJavaOpts: "-Xms1g -Xmx1g"
-# ───── 스토리지 ─────────────────────────────────────────────
-persistence:
-  enabled: true
-  size: 30Gi
-
-volumeClaimTemplate:
-  accessModes: ["ReadWriteOnce"]
-  storageClass: "local-storage"  # 로컬 스토리지 사용
-  resources:
-    requests:
-      storage: 30Gi
-
-# ───── 스케줄링 (taint & nodeSelector) ──────────────────────
-nodeSelector:
-  env: dev
-
-tolerations:
+# ------------------------------------------------------------
+# 공통 toleration – 필요한 곳마다 *efk_tolerations 로 재사용
+# ------------------------------------------------------------
+efk_tolerations: &efk_tolerations
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"
     effect: "NoSchedule"
@@ -68,12 +9,68 @@ tolerations:
     operator: "Equal"
     value: "worker"
     effect: "NoSchedule"
-antiAffinity: "soft"
 
-# ───── Elasticsearch 설정 ──────────────────────────────────
-clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
-# ───── 기타 ─────────────────────────────────────────────────
-tests:
-  enabled: false        # Helm 테스트 Job 생략
-sysctlInitContainer:
-  enabled: true         # vm.max_map_count 262144 세팅
+# ------------------------------------------------------------
+# Bitnami Elasticsearch
+# ------------------------------------------------------------
+global:
+  kibanaEnabled: false          # Kibana는 별도 차트 사용
+  imageRegistry: docker.io
+
+clusterName: efk
+
+image:
+  registry: docker.io
+  repository: bitnami/elasticsearch
+  tag: 8.15.2-debian-11-r0       # 2025-07-16 기준 안정 태그
+  pullPolicy: IfNotPresent
+
+security:                        # X-Pack / TLS 모두 끔 (HTTP only)
+  enabled: false
+  tls:
+    enabled: false
+
+master:
+  replicaCount: 1
+  masterOnly: true
+  tolerations: *efk_tolerations
+  persistence:
+    enabled: true
+    storageClass: gp2            # 필요하면 수정
+    size: 20Gi
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+data:
+  replicaCount: 2
+  tolerations: *efk_tolerations
+  persistence:
+    enabled: true
+    storageClass: local-storage
+    size: 30Gi
+  resources:
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+coordinating:
+  replicaCount: 1
+  tolerations: *efk_tolerations
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+ingest:
+  enabled: false                # 필요 시 true

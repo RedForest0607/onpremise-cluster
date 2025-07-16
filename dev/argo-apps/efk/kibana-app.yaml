@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kibana-app
+  name: kibana
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: 'https://helm.elastic.co'
+    repoURL: https://charts.bitnami.com/bitnami
     chart: kibana
-    targetRevision: 8.5.1
+    targetRevision: 10.3.3      # 최신판  [oai_citation:5‡Artifact Hub](https://artifacthub.io/packages/helm/bitnami/kibana?utm_source=chatgpt.com)
     helm:
       valueFiles:
-        - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/kibana/values.yaml
+        - ../../kibana-values.yaml
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: efk
   syncPolicy:
     automated:

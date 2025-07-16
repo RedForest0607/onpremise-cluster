@@ -6,14 +6,14 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://helm.elastic.co'
+    repoURL: https://charts.bitnami.com/bitnami
     chart: elasticsearch
-    targetRevision: 8.5.1
+    targetRevision: 22.0.13   # 2025-07-16 기준 최신 안정판  [oai_citation:4‡Artifact Hub](https://artifacthub.io/packages/helm/bitnami/elasticsearch?utm_source=chatgpt.com)
     helm:
       valueFiles:
-        - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/elasticsearch/values.yaml
+        - ../../elasticsearch-values.yaml
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: efk
   syncPolicy:
     automated:

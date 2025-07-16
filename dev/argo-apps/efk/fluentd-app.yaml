@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: fluentd
+  name: fluentbit
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: 'https://fluent.github.io/helm-charts'
-    chart: fluentd
-    targetRevision: 0.5.3
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: fluent-bit
+    targetRevision: 0.4.3       # 최신판  [oai_citation:6‡Artifact Hub](https://artifacthub.io/packages/helm/bitnami/fluent-bit?utm_source=chatgpt.com)
     helm:
       valueFiles:
-        - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/efk/fluentd/values.yaml
+        - ../../fluentbit-values.yaml
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: efk
   syncPolicy:
     automated:
