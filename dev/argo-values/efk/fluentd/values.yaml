@@ -79,11 +79,11 @@ config:
   ## --- Output: Elasticsearch ---
   outputs: |
     [OUTPUT]
-        Name            es
-        Match           *
-        Host            elasticsearch
-        Port            9200
-        Logstash_Format On           # → 인덱스: fluentbit-YYYY.MM.DD
-        Replace_Dots    On
-        Retry_Limit     False
-        tls             Off
+        Name              es
+        Match             *
+        Host              elasticsearch
+        Port              9200
+        Logstash_Format   On
+        Replace_Dots      On
+        Retry_Limit       False
+        tls               Off
