@@ -9,6 +9,11 @@ image:
 
 daemonset:
   enabled: true
+  hostPaths:
+    logs: /var/log
+    containerLogs: /var/log/containers   # containerd 표준
+    machineId: /etc/machine-id
+
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"
@@ -19,14 +24,6 @@ tolerations:
     effect: "NoSchedule"
 
 # 로그 경로 마운트 예시 (Docker, containerd 둘 다 커버)
-hostPathMounts:
-  - name: varlog
-    hostPath: /var/log
-    mountPath: /var/log
-  - name: containers
-    hostPath: /var/log/containers      # containerd면 /var/log/pods 로 변경
-    mountPath: /var/log/containers
-    readOnly: true
 
 backend:
   type: es
