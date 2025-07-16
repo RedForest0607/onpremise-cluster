@@ -11,7 +11,7 @@ spec:
     targetRevision: 22.0.13   # 2025-07-16 기준 최신 안정판  [oai_citation:4‡Artifact Hub](https://artifacthub.io/packages/helm/bitnami/elasticsearch?utm_source=chatgpt.com)
     helm:
       valueFiles:
-        - ../../elasticsearch-values.yaml
+        - ../../argo-values/efk/elasticsearch/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: efk

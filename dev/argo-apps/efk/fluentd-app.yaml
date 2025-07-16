@@ -11,7 +11,7 @@ spec:
     targetRevision: 0.4.3       # 최신판  [oai_citation:6‡Artifact Hub](https://artifacthub.io/packages/helm/bitnami/fluent-bit?utm_source=chatgpt.com)
     helm:
       valueFiles:
-        - ../../fluentbit-values.yaml
+        - ../../argo-values/efk/fluentd/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: efk
