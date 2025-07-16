@@ -1,9 +1,8 @@
 replicaCount: 1
 
-image:
-  repository: docker.elastic.co/kibana/kibana
-  tag: "8.5.1"
-  pullPolicy: IfNotPresent
+image: "docker.elastic.co/kibana/kibana"
+imageTag: "8.5.1"
+imagePullPolicy: "IfNotPresent"
 
 resources:
   requests:
@@ -12,6 +11,8 @@ resources:
   limits:
     cpu: "1"
     memory: "2Gi"
+
+protocol: http
 
 service:
   type: ClusterIP
