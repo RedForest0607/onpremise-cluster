@@ -43,3 +43,48 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+config:
+  ## --- Service 블록 ---
+  service: |
+    [SERVICE]
+        Flush           1
+        Daemon          Off
+        Log_Level       info
+        HTTP_Server     On
+        HTTP_Listen     0.0.0.0
+        HTTP_Port       {{ .Values.containerPorts.http }}
+        Parsers_File    parsers.conf
+        Config_Watch    On
+  ## --- Input: Tail ---
+  inputs: |
+    [INPUT]
+        Name              tail
+        Tag               kube.*
+        Path              /var/log/containers/*.log
+        Parser            cri
+        Refresh_Interval  5
+        Rotate_Wait       30
+        DB                /fluent-bit/tail-db/tail-containers.db
+        Mem_Buf_Limit     10MB
+        Skip_Long_Lines   On
+  ## --- Filter: Kubernetes 메타데이터 ---
+  filters: |
+    [FILTER]
+        Name                kubernetes
+        Match               kube.*
+        Merge_Log           On
+        Keep_Log            Off
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude Off
+  ## --- Output: Elasticsearch ---
+  outputs: |
+    [OUTPUT]
+        Name            es
+        Match           *
+        Host            elasticsearch
+        Port            9200
+        Logstash_Format On           # → 인덱스: fluentbit-YYYY.MM.DD
+        Replace_Dots    On
+        Retry_Limit     False
+        tls             Off
