@@ -9,24 +9,24 @@ image:
 
 daemonset:
   enabled: true
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "dedicated"
-      operator: "Equal"
-      value: "worker"
-      effect: "NoSchedule"
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+  - key: "dedicated"
+    operator: "Equal"
+    value: "worker"
+    effect: "NoSchedule"
 
-  # 로그 경로 마운트 예시 (Docker, containerd 둘 다 커버)
-  hostPathMounts:
-    - name: varlog
-      hostPath: /var/log
-      mountPath: /var/log
-    - name: containers
-      hostPath: /var/lib/docker/containers      # containerd면 /var/log/pods 로 변경
-      mountPath: /var/lib/docker/containers
-      readOnly: true
+# 로그 경로 마운트 예시 (Docker, containerd 둘 다 커버)
+hostPathMounts:
+  - name: varlog
+    hostPath: /var/log
+    mountPath: /var/log
+  - name: containers
+    hostPath: /var/log/pods/containers      # containerd면 /var/log/pods 로 변경
+    mountPath: /var/log/pods/containers
+    readOnly: true
 
 backend:
   type: es
