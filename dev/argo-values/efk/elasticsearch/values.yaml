@@ -36,7 +36,7 @@ master:
   tolerations: *efk_tolerations
   persistence:
     enabled: true
-    storageClass: gp2            # 필요하면 수정
+    storageClass: local-storage            # 필요하면 수정
     size: 20Gi
   resources:
     limits:
