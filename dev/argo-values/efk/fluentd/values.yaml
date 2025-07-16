@@ -24,8 +24,8 @@ hostPathMounts:
     hostPath: /var/log
     mountPath: /var/log
   - name: containers
-    hostPath: /var/log/pods/containers      # containerd면 /var/log/pods 로 변경
-    mountPath: /var/log/pods/containers
+    hostPath: /var/log/containers      # containerd면 /var/log/pods 로 변경
+    mountPath: /var/log/containers
     readOnly: true
 
 backend:
