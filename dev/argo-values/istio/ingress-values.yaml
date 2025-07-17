@@ -1,12 +1,11 @@
 gateways:
   istio-ingressgateway:
     enabled: true
-    k8s:
-      tolerations:
-        - key: "node-role.kubernetes.io/control-plane"
-          operator: "Exists"
-          effect: "NoSchedule"
-        - key: "dedicated"
-          operator: "Equal"
-          value: "worker"
-          effect: "NoSchedule"
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "dedicated"
+        operator: "Equal"
+        value: "worker"
+        effect: "NoSchedule"
