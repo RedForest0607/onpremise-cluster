@@ -6,6 +6,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"      # istio-base(웨이브 0) 이후
 spec:
+  project: default
   source:
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
