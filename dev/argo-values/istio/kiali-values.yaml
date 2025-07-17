@@ -10,6 +10,9 @@ cr:
           operator: "Equal"
           value: "worker"
           effect: "NoSchedule"
+    external_services:
+      prometheus:
+        url: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"
