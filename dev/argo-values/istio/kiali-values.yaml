@@ -1,15 +1,5 @@
 cr:
   create: true
-  spec:
-    deployment:
-      tolerations:
-        - key: "node-role.kubernetes.io/control-plane"
-          operator: "Exists"
-          effect: "NoSchedule"
-        - key: "dedicated"
-          operator: "Equal"
-          value: "worker"
-          effect: "NoSchedule"
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"
@@ -18,3 +8,12 @@ tolerations:
     operator: "Equal"
     value: "worker"
     effect: "NoSchedule"
+deployment:
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "dedicated"
+      operator: "Equal"
+      value: "worker"
+      effect: "NoSchedule"
