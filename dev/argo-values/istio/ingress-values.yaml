@@ -1,3 +1,12 @@
+gateways:
+  istio-ingressgateway:
+    enabled: true
+    service:
+      type: ClusterIP
+      ports:
+        - port: 80
+          targetPort: 8080
+          name: http2
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"
