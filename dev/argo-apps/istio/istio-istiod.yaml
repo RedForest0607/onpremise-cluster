@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-istiod
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"      # istio-base(웨이브 0) 이후
+spec:
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: istiod
+    targetRevision: 1.26.2
+    helm:
+      valueFiles:
+        - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/istio/istiod-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

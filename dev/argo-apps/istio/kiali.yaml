@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kiali
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"      # 모든 Istio 리소스 이후
+spec:
+  source:
+    repoURL: https://kiali.org/helm-charts
+    chart: kiali-operator        # Operator 설치
+    targetRevision: 2.12.0
+    helm:
+      parameters:
+        - name: cr.create
+          value: "true"
+        - name: cr.spec.auth.strategy
+          value: anonymous
+      valueFiles:
+        - https://raw.githubusercontent.com/RedForest0607/onpremise-cluster/main/dev/argo-values/istio/kiali-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kiali-operator          # Operator 네임스페이스
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
