@@ -1,6 +1,6 @@
 gateways:
   istio-ingressgateway:
-    enabled: true
+    enabled: false
     service:
       ports:
         - port: 80
