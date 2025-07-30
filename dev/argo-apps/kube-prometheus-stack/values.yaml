@@ -1,0 +1,119 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2.5"   # istiod(2) → monitoring(2.5) → kiali(3)
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 60.0.1               # 2025-07 기준 최신 확인
+    helm:
+      values: |
+        admissionWebhooks:
+          enabled: true
+          patch:
+            tolerations:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+                effect: NoSchedule
+              - key: dedicated
+                operator: Equal
+                value: worker
+                effect: NoSchedule
+          createSecretJob:
+            tolerations:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+                effect: NoSchedule
+              - key: dedicated
+                operator: Equal
+                value: worker
+                effect: NoSchedule
+        # ──────────────────────────────────────────────────────
+        # Prometheus Core
+        # ──────────────────────────────────────────────────────
+        prometheus:
+          prometheusSpec:
+            tolerations:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+                effect: NoSchedule
+              - key: dedicated
+                operator: Equal
+                value: worker
+                effect: NoSchedule
+          serviceAccount:
+            create: true
+          service:
+            type: ClusterIP               # 내부에서만 사용
+          podDisruptionBudget:
+            enabled: true
+          tolerations:                    # ← 노드 taint 해결
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+            - key: dedicated
+              operator: Equal
+              value: worker
+              effect: NoSchedule
+        # ──────────────────────────────────────────────────────
+        # Grafana
+        # ──────────────────────────────────────────────────────
+        grafana:
+          enabled: true
+          defaultDashboardsEnabled: true
+          adminPassword: "changeme"       # 최초 로그인 후 UI에서 꼭 변경
+          service:
+            type: ClusterIP
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+            - key: dedicated
+              operator: Equal
+              value: worker
+              effect: NoSchedule
+          # ── Ingress via 기존 NGINX ──
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              nginx.ingress.kubernetes.io/ssl-redirect: "false"
+            hosts:
+              - grafana.overpass.co.kr
+            path: /
+            pathType: Prefix
+        # ──────────────────────────────────────────────────────
+        # Exporter·Node relevant tolerations
+        # ──────────────────────────────────────────────────────
+        nodeExporter:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+            - key: dedicated
+              operator: Equal
+              value: worker
+              effect: NoSchedule
+        kube-state-metrics:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+            - key: dedicated
+              operator: Equal
+              value: worker
+              effect: NoSchedule
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
