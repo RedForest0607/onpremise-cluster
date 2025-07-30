@@ -1,0 +1,90 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # Harbor 공식 Helm 리포지토리 정보
+    repoURL: https://helm.goharbor.io
+    chart: harbor
+    # 원하는 Harbor 차트 버전을 지정할 수 있습니다. (예: 1.14.0)
+    targetRevision: 1.14.0
+
+    helm:
+      # Helm 차트의 values를 여기에 직접 정의합니다.
+      # ***아래 값들은 반드시 자신의 환경에 맞게 수정해야 합니다.***
+      values: |
+        # Harbor에 접근할 외부 URL을 지정합니다. 매우 중요합니다.
+        externalURL: https://harbor.overpass.co.kr
+
+        # Harbor 관리자 계정의 초기 비밀번호를 설정합니다.
+        # 설치 후 반드시 변경하는 것을 권장합니다.
+        harborAdminPassword:
+          existingSecret: "harbor-admin-password" # 1단계에서 생성한 Secret 이름
+          secretKey: "HARBOR_ADMIN_PASSWORD"     # Secret 안의 데이터 키
+
+        # Harbor를 외부에 노출시키는 방법 설정 (Ingress 권장)
+        expose:
+          type: ingress
+          # 사용하는 Ingress Controller에 맞는 클래스 이름을 지정해야 합니다. (e.g., "nginx", "traefik")
+          ingress:
+            className: "nginx"
+            hosts:
+              core: harbor.overpass.co.kr
+              notary: notary.yourdomain.com # Notary를 사용하지 않으면 비워둬도 됩니다.
+            # TLS/SSL 인증서 설정 (Let's Encrypt, 직접 발급 등)
+            # cert-manager를 사용하는 경우 아래 주석을 해제하고 설정합니다.
+              tls:
+              - hosts:
+                - harbor.overpass.co.kr
+                secretName: harbor-tls
+
+        # 데이터 영구 저장을 위한 설정 (Production 환경에서는 필수)
+        persistence:
+          enabled: true
+          # 사용하는 환경에 맞는 StorageClass를 지정해야 합니다.
+          # 예: "gp2" (AWS), "standard" (GKE), "managed-nfs-storage" (On-premise)
+          resourcePolicy: "keep"
+          persistentVolumeClaim:
+            registry:
+              storageClass: "local-storage"
+              size: 100Gi
+            chartmuseum:
+              storageClass: "local-storage"
+              size: 10Gi
+            jobservice:
+              storageClass: "local-storage"
+              size: 10Gi
+            database:
+              storageClass: "local-storage"
+              size: 10Gi
+            redis:
+              storageClass: "local-storage"
+              size: 10Gi
+            trivy:
+              storageClass: "local-storage"
+              size: 10Gi
+
+        # 이미지 취약점 스캐너 Trivy 설정
+        trivy:
+          enabled: true
+          storageClass: "local-storage"
+
+        # Notary (이미지 서명) 기능 사용 여부
+        notary:
+          enabled: false
+
+  # 배포 대상 클러스터 및 네임스페이스
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: harbor # Harbor를 설치할 네임스페이스
+
+  # 동기화 정책 설정
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true # 'harbor' 네임스페이스가 없으면 자동으로 생성
