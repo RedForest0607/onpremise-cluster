@@ -2,6 +2,7 @@ gateways:
   istio-ingressgateway:
     enabled: true
     service:
+      type: ClusterIP
       ports:
         - port: 80
           targetPort: 8080
